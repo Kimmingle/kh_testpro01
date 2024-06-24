@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="noticeMapper" >
+
+	<sql id="selectnotice">
+	SELECT
+		BOARD_NO noticeNo,
+	    BOARD_TITLE noticeTitle,
+	    BOARD_CONTENT noticeContent,
+	    BOARD_WRITER noticeWriter,
+	    CREATE_DATE createDate
+	
+	</sql>
+
+	<!-- select는 반환값 꼭 있음 -->
+	<select id ="boardCount" resultType="_int"> 
+		SELECT
+			COUNT(BOARD_NO)
+		FROM
+			BOARD
+		WHERE
+			STATUS = 'Y'
+	</select>
+
+	
+	<select id = "findAll"  resultType="board" parameterType ="map"> 
+		<include refid="selectBoard"/>
+FROM
+    (SELECT 
+        BOARD_NO,
+        BOARD_TITLE,
+        BOARD_WRITER,
+        BOARD_CONTENT, 
+        COUNT,
+        CREATE_DATE,
+        ORIGIN_NAME, 
+        ROWNUM RNUM
+    FROM
+        (SELECT 
+            BOARD_NO,
+            BOARD_TITLE,
+            BOARD_WRITER,
+            BOARD_CONTENT,
+            COUNT,
+            CREATE_DATE,
+            ORIGIN_NAME
+        FROM
+            BOARD
+        WHERE
+            STATUS = 'Y'
+        ORDER
+            BY
+            BOARD_NO DESC ))
+WHERE
+    RNUM BETWEEN #{startValue} AND #{endValue}
+	
+	</select>
+	
+	<select id ="searchCount" parameterType="hashmap" resultType="int"> 
+		SELECT
+			COUNT(BOARD_NO)
+		FROM
+			BOARD
+		WHERE
+			STATUS = 'Y'
+		<if test="condition=='writer'">
+			AND
+	    		BOARD_WRITER
+		</if>
+		<if test="condition=='title'">
+			AND
+	    		BOARD_TITLE
+		</if>
+		<if test="condition=='content'">
+			AND
+	    		BOARD_CONTENT
+    	</if>
+    		LIKE '%'|| #{keyword}  ||  '%'
+	</select>
+	
+	
+	<select id="findByConditionAndKetword" parameterType="hashmap" resultType="board">
+	
+	<include refid="selectBoard"/>
+	FROM
+			BOARD
+	WHERE
+		STATUS='Y'
+		
+	<choose>
+		<when test = "condition == 'writer'">
+			AND BOARD_WRITER
+		</when>
+		<when test = "condition == 'title'">
+			AND BOATD_TITLE
+		</when>
+		<otherwise>
+			AND BOATD_CONTENT
+		</otherwise>
+	
+	</choose>	
+	LIKE '%'|| #{keyword}  ||  '%'
+	ODERBY
+		BOARD_NO DESC
+	    
+	</select>
+	
+	<insert id = "insert" parameterType="board" >
+		INSERT
+		INTO
+			BOARD
+			(
+			BOARD_NO,
+            BOARD_TITLE,
+            BOARD_WRITER,
+            BOARD_CONTENT,
+            ORIGIN_NAME,
+            CHANGE_NAME
+			)
+		VALUES
+			(
+			SEQ_BNO.NEXTVAL,
+			#{boardTitle },
+			#{boardWriter},
+			#{boardContent },
+			#{originName},
+			#{changeName}
+			)
+
+
+	</insert>
+	
+
+</mapper>

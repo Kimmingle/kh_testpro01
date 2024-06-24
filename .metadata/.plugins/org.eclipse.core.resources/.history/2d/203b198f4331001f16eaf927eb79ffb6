@@ -1,0 +1,14 @@
+package com.kh.spring.board.model.repository;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class NoticeRepository {
+
+	public int noticeCount(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("noticeMapper.count", sqlSession);
+	}
+
+}

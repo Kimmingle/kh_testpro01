@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;springProject/src/main/java/com/kh/spring/board/model/repository/noticeRepository.java&apos; to &apos;NoticeRepository.java&apos;" description="Rename resource &apos;noticeRepository.java&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/java/com/kh/spring/board/model/repository/noticeRepository.java" name="NoticeRepository.java" stamp="1719132370971" updateReferences="true"/>
+</session>
